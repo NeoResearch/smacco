@@ -1,0 +1,3 @@
+[submodule "public/js/common/smacco"]
+	path = public/js/common/smacco
+	url = https://github.com/NeoResearch/smacco.git
