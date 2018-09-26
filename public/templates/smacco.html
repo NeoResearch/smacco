@@ -86,6 +86,7 @@
                                 </div>
                                 <!-- end python div -->
                                 <!-- /////////////////////////////////////////////////////////////////// -->
+                                Neo Compiler Services: <input id="compilerServicesPath" type="text" value="https://compilers.neocompiler.io" placeholder="Neo Compiler Services" size="40"/><br/>
                                 <button id="compilebtn" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal" onclick="createAccount()">Create account</button>
 
 
@@ -101,7 +102,6 @@
                                   </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane active cont" id="csharpSmaccoCode">
-                                                <input type="hidden" id="code_cs" name="codesend_cs"/>
                                                 <pre id="csharpSmaccoCode">
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
@@ -118,10 +118,17 @@ namespace NeoContract1 {
                                   </div>
                                 </div>
 
+                                <form id="compilerServicesForm"  method="post">
+                                  <input type="hidden" id="code_cs" name="codesend_cs"/>
+                                  <select name="compilers_versions" id="compilers_versions-selection-box" class="custom-select form-control">
+                                    <option value="latest">latest</option>
+                                  </select>
+                                </form>
+
 
                                 <h4>AVM (in hex):</h4>
                                 <textarea id="codeavm" name="codeavm" readonly="readonly" rows="5" cols="100" placeholder="AVM (in hex)" class="form-control"></textarea>
-
+                                <input type="text" id="contracthash" placeholder="ScriptHash" size="30"></input>
 
                             <!-- end of compilex form -->
                             <!-- /////////////////////////////////////////////////////////////////// -->
@@ -181,6 +188,10 @@ namespace NeoContract1 {
           var smaccoConfig = JSON.parse(json_code);
           var smaccoParser = new smacco.Smacco(smaccoConfig);
           csharpSmaccoCode.getSession().setValue( smaccoParser.csGenerateAccount() );
+
+          $("#code_cs").val( ace.edit("csharpSmaccoCode").getSession().getValue() );
+
+          invokeRemoteCompiler($("#compilerServicesPath")[0].value);
         }
 
 
@@ -221,6 +232,26 @@ namespace NeoContract1 {
         	 }
             //===============================================================
 
+        function invokeRemoteCompiler(compilerServicesPath)
+        {
+            console.log("will compile on: '"+compilerServicesPath+"'");
+            var indata = $("#compilerServicesForm").serialize();
+            $.post(
+              compilerServicesPath + "/compilex",
+              indata, // Serializes form data in standard format
+              function (data) {
+                  console.log("finished compiling");
+                  var coderr = atob(data.output);
+                  $("#codewarnerr").val(coderr);
+                  var hexcodeavm = atob(data.avm);
+                  hexcodeavm = hexcodeavm.replace(/(\r\n|\n|\r)/gm, "");
+                  var scriptHash = "";
+                  if(hexcodeavm != "")
+                    scriptHash = getScriptHashFromAVM(hexcodeavm);
+                  $("#codeavm").val(hexcodeavm);
+                  $("#contracthash").val( scriptHash );
+                }, "json");
+        }
 
     </script>
 </div>
