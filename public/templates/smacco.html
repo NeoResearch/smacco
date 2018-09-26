@@ -8,13 +8,13 @@
         <!-- BEGIN DIV MAIN CONTENTS - EVERYTHING IS HERE - I -->
         <div class="col-sm-10">
                     <div class="panel panel-success">
-                        <div class="panel-heading">SMACCO (The project is already working, but this website is under construction... come back in a few days!)</div>
+                        <div class="panel-heading">Welcome to SMACCO - The SMart ACcount COmposer</div>
                         <div class="panel-body">
                             <form id="formSmacco" action="/smacco" style="margin-top: 10px;" method="post">
                                 <div class="tab-container">
                                     <ul class="nav nav-tabs" id="smacconavtabs">
-                                        <li class="active"><a data-target="#singleSigCode" data-toggle="tab">single-sig</a></li>
-                                        <li><a data-target="#multiSigCode" data-toggle="tab">multi-sig</a></li>
+                                        <li class="active"><a data-target="#singleSigCode" data-toggle="tab">single input</a></li>
+                                        <li><a data-target="#multiSigCode" data-toggle="tab">array input</a></li>
                                     </ul>
 
                                     <!-- /////////////////////////////////////////////////////////////////// -->
@@ -27,27 +27,25 @@
                                                         <span class="caret"></span>
                                                     </a>
                                                     <ul class="dropdown-menu" id="ExampleList">
-                                                        <li><a onclick="setExample('0')">HelloWorld.cs</a></li>
-                                                        <li><a onclick="setExample('1')">ICO_Template.cs</a></li>
+                                                        <li><a onclick="setExampleSingle('0')">SingleCheckSig.json</a></li>
+                                                        <li><a onclick="setExampleSingle('1')">SingleTimeLock.json</a></li>
                                                     </ul>
                                                 </div>
-                                                <input type="hidden" id="code_cs" name="codesend_cs"/>
                                                 <pre id="editorSingleSig">
-using Neo.SmartContract.Framework;
-using Neo.SmartContract.Framework.Services.Neo;
-using System;
-using System.Numerics;
-namespace NeoContract1
 {
-    public class Contract1 : SmartContract
-    {
-        public static void Main()
-        {
-            Storage.Put(Storage.CurrentContext, &quot;Hello&quot;, &quot;World&quot;);
-        }
+  "standard": "smacco-1.0",
+  "input_type": "single",
+  "pubkey_list": [
+    "036245f426b4522e8a2901be6ccc1f71e37dc376726cc6665d80c5997e240568fb"
+  ],
+  "rule": {
+    "rule_type": "ALLOW_IF",
+    "condition": {
+      "condition_type": "CHECKSIG"
     }
+  }
 }
-                                      </pre>
+                                                </pre>
                                     </div>
                                     <!-- /////////////////////////////////////////////////////////////////// -->
                                     <!-- end singleSigCode -->
@@ -56,17 +54,23 @@ namespace NeoContract1
                                           <!-- python div -->
                                           <div class="tab-pane cont" id="multiSigCode">
                                               <input type="hidden" id="code_python" name="codesend_python"/>
-                                              <pre id="editorPython">
-from boa.interop.Neo.Runtime import Notify, CheckWitness
-
-def Main():
-    #OWNER=b'031a6c6fbbdf02ca351745fa86b9ba5a9452d785ac4f7fc2b7548ca2a46c4fcf4a'
-    OWNER=b'\x03\x1alo\xbb\xdf\x02\xca5\x17E\xfa\x86\xb9\xbaZ\x94R\xd7\x85\xacO\x7f\xc2\xb7T\x8c\xa2\xa4lO\xcfJ'
-    result = CheckWitness(OWNER)
-    if result:
-        print(&quot;OWNER is caller&quot;)
-        return True
-    return False
+                                              <pre id="editorMultiSig">
+{
+  "standard": "smacco-1.0",
+  "input_type": "array",
+  "pubkey_list": [
+    "036245f426b4522e8a2901be6ccc1f71e37dc376726cc6665d80c5997e240568fb",
+    "0303897394935bb5418b1c1c4cf35513e276c6bd313ddd1330f113ec3dc34fbd0d",
+    "02e2baf21e36df2007189d05b9e682f4192a101dcdf07eed7d6313625a930874b4"
+  ],
+  "rule": {
+    "rule_type": "ALLOW_IF",
+    "condition": {
+      "condition_type": "CHECKMULTISIG",
+      "minimum_required": "2"
+    }
+  }
+}
                                             </pre>
                                         </div>
                                     </div>
@@ -137,20 +141,23 @@ def Main():
     <script src="public/js/common/neoEditorScripts.js"></script>
 
     <script>
-        var editorPython = createEditor("editorPython", "ace/mode/python");
-        var editorSingleSig = createEditor("editorSingleSig", "ace/mode/csharp");
+        var editorMultiSIg = createEditor("editorMultiSig", "ace/mode/json");
+        var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
-        var cSharpFiles = [
+        var singleExampleFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
-            ["/examples/csharp/HelloWorld/HelloWorld.cs"],
-            ["/examples/csharp/ICO_Template/ICO_Template.cs"],
+            ["/examples/single/SingleCheckSig.json"],
+            ["/examples/single/SingleTimeLock.json"],
+            ["/examples/single/Charity.json"]
         ];
 
-
+        var arrayExampleFiles = [
+            //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
+            ["/examples/array/ArrayMultiSig.json"]
+        ];
 
         //Check current webpage and starts with localhost or neocompiler public website
         $(document).ready(function(){
-
 
         });
     </script>
