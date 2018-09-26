@@ -264,39 +264,6 @@
 
     //===============================================================
 
-    function setExampleSingle( selected_index ){
-        console.log("selecting example:"+selected_index);
-
-        editorCSharp.getSession().setValue("");
-
-		  getfileSingle(selected_index, 0);
-		  /*
-		  var numfiles = cSharpFiles[selected_index].length;
-		  if(numfiles == 1) {
-	        console.log("example file is: "+file);
-		  } else {
-			  var file_i = 0;
-			  while(file_i < numfiles) {
-
-			  }
-		  }
-		  */
-    }
-
-	 function getfileSingle(selected_index, index=0) {
-		 var numfiles = singleExampleFiles[selected_index].length;
-		 if(index < numfiles) {
-		 	var file = singleExampleFiles[selected_index][index];
-			console.log("getting example file: "+file);
-			$.get(file, function (data) {
-			 	editorSingleSig.getSession().setValue(editorSingleSig.getSession().getValue() + data);
-				getfileSingle(selected_index, index+1);
-			});
-	 	 }
-	 }
-    //===============================================================
-
-
 
    //===============================================================
    function convertParam(type, value) {
