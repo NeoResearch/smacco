@@ -89,7 +89,7 @@
                                 <button id="compilebtn" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal" onclick="createAccount()">Create account</button>
 
 
-                                <h4>SMACCO Errors:</h4>
+                                <h4>SMACCO Compiler Output:</h4>
                                 <!-- end common submit button -->
                                 <!-- /////////////////////////////////////////////////////////////////// -->
 
@@ -127,9 +127,8 @@ namespace NeoContract1 {
 
                                 <h4>AVM (in hex):</h4>
                                 <textarea id="codeavm" name="codeavm" readonly="readonly" rows="5" cols="100" placeholder="AVM (in hex)" class="form-control"></textarea>
-                                <input type="text" id="contracthash" placeholder="ScriptHash" size="30"></input>
-
-
+                                ScriptHash: <input type="text" id="contracthash" placeholder="ScriptHash" size="30" readonly></input><br/>
+                                Address: <input type="text" id="contractAddress" placeholder="Address" size="30" readonly></input>
 
                             <!-- end of compilex form -->
                             <!-- /////////////////////////////////////////////////////////////////// -->
@@ -156,6 +155,7 @@ namespace NeoContract1 {
         var editorMultiSig = createEditor("editorMultiSig", "ace/mode/json");
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
+        csharpSmaccoCode.setOptions({readOnly: true});
         var singleExampleFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
             ["/examples/single/SingleCheckSig.json"],
@@ -236,6 +236,10 @@ namespace NeoContract1 {
         {
             console.log("will compile on: '"+compilerServicesPath+"'");
             var indata = $("#compilerServicesForm").serialize();
+            $("#codeavm").val("");
+            $("#contracthash").val("");
+            $("#contractAddress").val("");
+            $("#codewarnerr").val("remote compiling on "+compilerServicesPath+"...");
             $.post(
               compilerServicesPath + "/compilex",
               indata, // Serializes form data in standard format
@@ -246,10 +250,15 @@ namespace NeoContract1 {
                   var hexcodeavm = atob(data.avm);
                   hexcodeavm = hexcodeavm.replace(/(\r\n|\n|\r)/gm, "");
                   var scriptHash = "";
-                  if(hexcodeavm != "")
+                  var scriptAddress = "";
+                  if(hexcodeavm != "") {
                     scriptHash = getScriptHashFromAVM(hexcodeavm);
+                    scriptAddress = Neon.wallet.getAddressFromScriptHash(scriptHash);
+                  }
                   $("#codeavm").val(hexcodeavm);
                   $("#contracthash").val( scriptHash );
+                  $("#contractAddress").val( scriptAddress );
+
                 }, "json");
         }
         //The first call is done here as default
@@ -286,6 +295,6 @@ namespace NeoContract1 {
                   select.appendChild(option);
         }
         //===============================================================
-        
+
     </script>
 </div>
