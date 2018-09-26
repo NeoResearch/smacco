@@ -1,12 +1,7 @@
 /* Some Global Variables  */
 
-var refreshIntervalId = 0;
-var ALLOW_NOTIFICATIONS_ALERTS = true;
-
-var ENV_VARS = "";
-
 /* Main  */
-var app = angular.module('neoCompilerIoWebApp', [
+var app = angular.module('smaccoWebApp', [
   'ngRoute'
 ]);
 

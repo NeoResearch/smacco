@@ -10,6 +10,7 @@
                     <div class="panel panel-success">
                         <div class="panel-heading">Welcome to SMACCO - The SMart ACcount COmposer</div>
                         <div class="panel-body">
+                            <form id="formSmacco" action="/smacco" style="margin-top: 10px;" method="post">
                                 <div class="tab-container">
                                     <ul class="nav nav-tabs" id="smacconavtabs">
                                         <li class="active"><a data-target="#singleSigCode" data-toggle="tab">single input</a></li>
@@ -31,7 +32,13 @@
                                                         <li><a onclick="setExampleSingle('2')">Charity.json</a></li>
                                                     </ul>
                                                 </div>
+                                                <input type="hidden" id="code_cs" name="codesend_cs"/>
                                                 <pre id="editorSingleSig">
+using Neo.SmartContract.Framework;
+using Neo.SmartContract.Framework.Services.Neo;
+using System;
+using System.Numerics;
+namespace NeoContract1
 {
   "standard": "smacco-1.0",
   "input_type": "single",
@@ -93,6 +100,7 @@
                                 <!-- /////////////////////////////////////////////////////////////////// -->
 
                                 <textarea id="codewarnerr" readonly="readonly" rows="7" cols="100" placeholder="Warning/Errors in code..." class="form-control"></textarea>
+                              </form> <!-- id="formSMACCO" -->
 
                                 <div class="tab-container">
                                   <ul class="nav nav-tabs" id="compilersnavtabs">
@@ -111,8 +119,7 @@ namespace NeoContract1 {
     public static bool Main(byte[] signature) {
       return (VerifySignature(signature, pubkey_0));
     }
-  }
-}
+    }
                                       </pre>
                                     </div>
                                   </div>
@@ -148,7 +155,7 @@ namespace NeoContract1 {
         var editorMultiSig = createEditor("editorMultiSig", "ace/mode/json");
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
-        var singleExampleFiles = [
+        var cSharpFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
             ["/examples/single/SingleCheckSig.json"],
             ["/examples/single/SingleTimeLock.json"],
