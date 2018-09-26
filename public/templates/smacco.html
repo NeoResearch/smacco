@@ -31,7 +31,6 @@
                                                         <li><a onclick="setExampleSingle('2')">Charity.json</a></li>
                                                     </ul>
                                                 </div>
-                                                <input type="hidden" id="code_cs" name="codesend_cs"/>
                                                 <pre id="editorSingleSig">
 {
   "standard": "smacco-1.0",
@@ -113,7 +112,7 @@ namespace NeoContract1 {
       return (VerifySignature(signature, pubkey_0));
     }
     }
-                                      </pre>
+                                                </pre>
                                     </div>
                                   </div>
                                 </div>
@@ -130,9 +129,11 @@ namespace NeoContract1 {
                                 <textarea id="codeavm" name="codeavm" readonly="readonly" rows="5" cols="100" placeholder="AVM (in hex)" class="form-control"></textarea>
                                 <input type="text" id="contracthash" placeholder="ScriptHash" size="30"></input>
 
+
+
                             <!-- end of compilex form -->
                             <!-- /////////////////////////////////////////////////////////////////// -->
-                        </div>
+                        </div>   <!-- end of panel body -->
                     </div>
       <!-- END DIV MAIN CONTENTS - EVERYTHING WAS INSIDE HERE - II-->
       <!-- ======================================================== -->
@@ -194,7 +195,6 @@ namespace NeoContract1 {
           invokeRemoteCompiler($("#compilerServicesPath")[0].value);
         }
 
-
         function setExampleSingle( selected_index ) {
             console.log("selecting single example:"+selected_index);
             editorSingleSig.getSession().setValue("");
@@ -252,6 +252,40 @@ namespace NeoContract1 {
                   $("#contracthash").val( scriptHash );
                 }, "json");
         }
+        //The first call is done here as default
+        updateCompilersSelectionBox("docker-mono-neo-compiler");
+        function updateCompilersSelectionBox(compilerType)
+        {
+          console.log("test");
+          console.log("will compile on: '"+$("#compilerServicesPath")[0].value+'/getcompilers');
+          $.get($("#compilerServicesPath")[0].value+'/getcompilers',
+              function (data) {
+              compilerSelectionBoxID = "compilers_versions-selection-box";
+              compilerSelectionBoxObj = document.getElementById(compilerSelectionBoxID);
+              compilerSelectionBoxObj.options.length = 0;
+              console.log(data)
 
+              for(c = 0; c < data.length; c++)
+              {
+                if(data[c].compiler == compilerType)
+                  addOptionToSelectionBox(data[c].version,compilerType +":"+data[c].version,compilerSelectionBoxID);
+              }
+              //Select the latest as default
+              compilerSelectionBoxObj.selectedIndex = (compilerSelectionBoxObj.length -1)
+           },
+           "json" // The format the response should be in
+           );
+        }
+
+        //============= ADD OPTION TO SELECTION BOX =====================
+        function addOptionToSelectionBox(textToOption,valueToOption,walletSelectionBox){
+                  var option = document.createElement("option");
+                  option.text = textToOption;
+                  option.value = valueToOption;
+                  var select = document.getElementById(walletSelectionBox);
+                  select.appendChild(option);
+        }
+        //===============================================================
+        
     </script>
 </div>
