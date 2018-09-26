@@ -53,8 +53,16 @@
                                           <!-- /////////////////////////////////////////////////////////////////// -->
                                           <!-- python div -->
                                           <div class="tab-pane cont" id="multiSigCode">
-                                              <input type="hidden" id="code_python" name="codesend_python"/>
-                                              <pre id="editorMultiSig">
+                                            <div class="dropdown btn-group" style="margin-bottom: 10px">
+                                                <a class="btn btn-sucess dropdown-toggle" data-toggle="dropdown">
+                                                    Select Example
+                                                    <span class="caret"></span>
+                                                </a>
+                                                <ul class="dropdown-menu" id="ExampleList2">
+                                                    <li><a onclick="setExampleMulti('0')">ArrayMultiSig.json</a></li>
+                                                </ul>
+                                            </div>
+                                            <pre id="editorMultiSig">
 {
   "standard": "smacco-1.0",
   "input_type": "array",
@@ -93,21 +101,18 @@
                                     <div class="tab-content">
                                         <div class="tab-pane active cont" id="csharpSmaccoCode">
                                                 <input type="hidden" id="code_cs" name="codesend_cs"/>
-                                                <pre id="editorCSharp">
-    using Neo.SmartContract.Framework;
-    using Neo.SmartContract.Framework.Services.Neo;
-    using System;
-    using System.Numerics;
-    namespace NeoContract1
-    {
-    public class Contract1 : SmartContract
-    {
-        public static void Main()
-        {
-            Storage.Put(Storage.CurrentContext, &quot;Hello&quot;, &quot;World&quot;);
-        }
+                                                <pre id="csharpSmaccoCode">
+using Neo.SmartContract.Framework;
+using Neo.SmartContract.Framework.Services.Neo;
+using Neo.SmartContract.Framework.Services.System;
+namespace NeoContract1 {
+  public class Contract1 : SmartContract {
+    public static readonly byte[] pubkey_0 = "036245f426b4522e8a2901be6ccc1f71e37dc376726cc6665d80c5997e240568fb".HexToBytes();
+    public static bool Main(byte[] signature) {
+      return (VerifySignature(signature, pubkey_0));
     }
-    }
+  }
+}
                                       </pre>
                                     </div>
                                   </div>
@@ -140,7 +145,7 @@
     <script src="public/js/common/neoEditorScripts.js"></script>
 
     <script>
-        var editorMultiSIg = createEditor("editorMultiSig", "ace/mode/json");
+        var editorMultiSig = createEditor("editorMultiSig", "ace/mode/json");
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
         var singleExampleFiles = [
@@ -162,21 +167,33 @@
 
         function createAccount()
         {
-
+          console.log("generating smart account on C#");
+          var json_code = "";
           if( $("#singleSigCode.tab-pane.active.cont").length != 0) {
-            console.log("SINGLE!");
+            //console.log("SINGLE!");
+            json_code = ace.edit("editorSingleSig").getSession().getValue();
           }
           else {
-            console.log("MULTI!");
+            //console.log("MULTI!");
+            json_code = ace.edit("editorMultiSig").getSession().getValue();
           }
 
+          var smaccoConfig = JSON.parse(json_code);
+          var smaccoParser = new smacco.Smacco(smaccoConfig);
+          csharpSmaccoCode.getSession().setValue( smaccoParser.csGenerateAccount() );
         }
 
 
         function setExampleSingle( selected_index ) {
-            console.log("selecting example:"+selected_index);
+            console.log("selecting single example:"+selected_index);
             editorSingleSig.getSession().setValue("");
       		  getfileSingle(selected_index, 0);
+        }
+
+        function setExampleMulti( selected_index ) {
+            console.log("selecting multi example:"+selected_index);
+            editorMultiSig.getSession().setValue("");
+      		  getfileMulti(selected_index, 0);
         }
 
         	 function getfileSingle(selected_index, index=0) {
@@ -187,6 +204,18 @@
         			$.get(file, function (data) {
         			 	editorSingleSig.getSession().setValue( editorSingleSig.getSession().getValue() + data);
         				getfileSingle(selected_index, index+1);
+        			}, 'text');
+        	 	 }
+        	 }
+
+           function getfileMulti(selected_index, index=0) {
+        		 var numfiles = arrayExampleFiles[selected_index].length;
+        		 if(index < numfiles) {
+        		 	var file = arrayExampleFiles[selected_index][index];
+        			console.log("getting multi example file: "+file);
+        			$.get(file, function (data) {
+        			 	editorMultiSig.getSession().setValue( editorMultiSig.getSession().getValue() + data);
+        				getfileMulti(selected_index, index+1);
         			}, 'text');
         	 	 }
         	 }
