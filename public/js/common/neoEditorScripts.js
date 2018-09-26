@@ -222,9 +222,6 @@
     }); //End of form Compile function
     //===============================================================
 
-
-
-
     //===============================================================
     function createEditor(name, mode) {
         var editor = ace.edit(name);
@@ -251,8 +248,6 @@
     }
 
     //===============================================================
-
- 
 
     function GetOpcodes() {
          console.log("disassembly opcodes...");
@@ -295,21 +290,4 @@
 	 	 }
 	 }
     //===============================================================
-
-  
-
-   //===============================================================
-   function convertParam(type, value) {
-     if(type == "String")
-        return "\""+value+"\"";
-     if(type == "Address")
-        return "\""+value+"\"";
-     if(type == "Hex")
-        return "b'"+Neon.u.str2hexstring(Neon.u.hexstring2str(value))+"'";
-     if(type == "Integer")
-        return ""+Number(value);
-     return "";
-   }
-   //===============================================================
-
 

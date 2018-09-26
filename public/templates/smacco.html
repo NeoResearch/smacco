@@ -31,7 +31,7 @@
                                                         <li><a onclick="setExample('1')">ICO_Template.cs</a></li>
                                                     </ul>
                                                 </div>
-                                                <input type="hidden" id="code_cs" name="codesend_cs"/>
+                                                <input type="hidden" id="code_ss" name="codesend_ss"/>
                                                 <pre id="editorSingleSig">
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
@@ -47,16 +47,16 @@ namespace NeoContract1
         }
     }
 }
-                                      </pre>
-                                    </div>
+                                              </pre>
+                                       </div>
                                     <!-- /////////////////////////////////////////////////////////////////// -->
                                     <!-- end singleSigCode -->
 
                                           <!-- /////////////////////////////////////////////////////////////////// -->
                                           <!-- python div -->
                                           <div class="tab-pane cont" id="multiSigCode">
-                                              <input type="hidden" id="code_python" name="codesend_python"/>
-                                              <pre id="editorPython">
+                                              <input type="hidden" id="code_ms" name="codesend_ms"/>
+                                              <pre id="editorMS">
 from boa.interop.Neo.Runtime import Notify, CheckWitness
 
 def Main():
@@ -73,7 +73,7 @@ def Main():
                                 </div>
                                 <!-- end python div -->
                                 <!-- /////////////////////////////////////////////////////////////////// -->
-                                <button type="submit" id="compilebtn" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal">Create account</button>
+                                <button type="submit" id="createSmaccoButton" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal">Create account</button>
 
 
                                 <h4>SMACCO Errors:</h4>
@@ -83,6 +83,7 @@ def Main():
                                 <textarea id="codewarnerr" readonly="readonly" rows="7" cols="100" placeholder="Warning/Errors in code..." class="form-control"></textarea>
                               </form> <!-- id="formSMACCO" -->
 
+                              <form id="formCompilexSmacco" action="/compilexSmacco" style="margin-top: 10px;" method="post">
                                 <div class="tab-container">
                                   <ul class="nav nav-tabs" id="compilersnavtabs">
                                       <li class="active"><a data-target="#csharpSmaccoCode" data-toggle="tab">C#</a></li>
@@ -109,11 +110,11 @@ def Main():
                                     </div>
                                   </div>
                                 </div>
-
-
                                 <h4>AVM (in hex):</h4>
+                                <button type="submit" id="compilebtn" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal">Compile</button>
                                 <textarea id="codeavm" name="codeavm" readonly="readonly" rows="5" cols="100" placeholder="AVM (in hex)" class="form-control"></textarea>
 
+                              </form> <!-- id="formCompilexSmacco" -->
 
                             <!-- end of compilex form -->
                             <!-- /////////////////////////////////////////////////////////////////// -->
@@ -137,9 +138,9 @@ def Main():
     <script src="public/js/common/neoEditorScripts.js"></script>
 
     <script>
-        var editorPython = createEditor("editorPython", "ace/mode/python");
+        var editorMS = createEditor("editorMS", "ace/mode/python");
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/csharp");
-        var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
+        var csharpSmaccoCode = createEditor("editorCSharp", "ace/mode/csharp");
         var cSharpFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
             ["/examples/csharp/HelloWorld/HelloWorld.cs"],
