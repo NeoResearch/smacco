@@ -162,16 +162,19 @@ namespace NeoContract1 {
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
         csharpSmaccoCode.setOptions({readOnly: true});
+        var hrefBase = document.location.href;
+        if(hrefBase[hrefBase.length-2]=="#")
+          hrefBase = hrefBase.substr(0,hrefBase.length-3);
         var singleExampleFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
-            [document.location.href+"/examples/single/SingleCheckSig.json"],
-            [document.location.href+"/examples/single/SingleTimeLock.json"],
-            [document.location.href+"/examples/single/Charity.json"]
+            [hrefBase+"/examples/single/SingleCheckSig.json"],
+            [hrefBase+"/examples/single/SingleTimeLock.json"],
+            [hrefBase+"/examples/single/Charity.json"]
         ];
 
         var arrayExampleFiles = [
             //["https://raw.githubusercontent.com/NeoResearch/examples-csharp/master/HelloWorld/HelloWorld.cs"],
-            [document.location.href+"/examples/array/ArrayMultiSig.json"]
+            [hrefBase+"/examples/array/ArrayMultiSig.json"]
         ];
 
         //Check current webpage and starts with localhost or neocompiler public website
