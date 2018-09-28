@@ -88,6 +88,7 @@
                                 Neo Compiler Services: <input id="compilerServicesPath" type="text" value="https://compilers.neocompiler.io" placeholder="Neo Compiler Services" size="40"/><br/>
                                 <button id="compilebtn" style="margin-top: 5px;" class="btn btn-success" data-toggle="modal" onclick="createAccount()">Create account</button>
 
+                                <div id="diagram"></div>
 
                                 <h4>SMACCO Compiler Output:</h4>
                                 <!-- end common submit button -->
@@ -197,6 +198,10 @@ namespace NeoContract1 {
 
           $("#code_cs").val( ace.edit("csharpSmaccoCode").getSession().getValue() );
 
+          var flowchartCode = smaccoParser.generateFlowChart();
+          console.log("flowchart.js code:\n"+flowchartCode);
+          createAccountFlowchart( flowchartCode );
+
           invokeRemoteCompiler($("#compilerServicesPath")[0].value);
         }
 
@@ -235,8 +240,51 @@ namespace NeoContract1 {
         			}, 'text');
         	 	 }
         	 }
-            //===============================================================
+    //===============================================================
 
+    function createAccountFlowchart( flowchart_code ) {
+      var diagram = flowchart.parse(flowchart_code);
+      $("#diagram")[0].innerHTML="";
+      diagram.drawSVG('diagram', {
+                                  'x': 0,
+                                  'y': 0,
+                                  'line-width': 3,
+                                  'line-length': 50,
+                                  'text-margin': 10,
+                                  'font-size': 14,
+                                  'font-color': 'black',
+                                  'line-color': 'black',
+                                  'element-color': 'black',
+                                  'fill': 'white',
+                                  'yes-text': 'yes',
+                                  'no-text': 'no',
+                                  'arrow-end': 'block',
+                                  'scale': 1,
+                                  // style symbol types
+                                  'symbols': {
+                                    'start': {
+                                      'font-color': 'red',
+                                      'element-color': 'green',
+                                      'fill': 'yellow'
+                                    },
+                                    'end':{
+                                      'class': 'end-element'
+                                    }
+                                  },
+                                  // even flowstate support ;-)
+                                  'flowstate' : {
+                                    'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                                    'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                                    'future' : { 'fill' : '#FFFF99'},
+                                    'request' : { 'fill' : 'blue'},
+                                    'invalid': {'fill' : '#444444'},
+                                    'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                                    'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                                  }
+                                });
+    }
+
+    // ==============================================================
         function invokeRemoteCompiler(compilerServicesPath)
         {
             console.log("will compile on: '"+compilerServicesPath+"'");
