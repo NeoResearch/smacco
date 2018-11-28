@@ -154,10 +154,30 @@ namespace NeoContract1 {
   <!-- ======================================================== -->
   <!-- ======================================================== -->
   <!-- ======================================================== -->
-
-    <script src="public/js/common/neoEditorScripts.js"></script>
-
     <script>
+        function createEditor(name, mode) {
+            var editor = ace.edit(name);
+            editor.setTheme("ace/theme/clouds");
+            editor.session.setMode(mode);
+            editor.setAutoScrollEditorIntoView(true);
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: false,
+                maxLines: 30
+            });
+            editor.commands.addCommand({
+                name: "showKeyboardShortcuts",
+                bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+                exec: function (editor) {
+                    ace.config.loadModule("ace/ext/keybinding_menu", function (module) {
+                        module.init(editor);
+                        //editor.showKeyboardShortcuts() just shows when tigger the hotkey
+                    })
+                }
+            })
+            return editor
+        }
         var editorMultiSig = createEditor("editorMultiSig", "ace/mode/json");
         var editorSingleSig = createEditor("editorSingleSig", "ace/mode/json");
         var csharpSmaccoCode = createEditor("csharpSmaccoCode", "ace/mode/csharp");
