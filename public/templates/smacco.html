@@ -101,7 +101,6 @@
                                       <li class="active"><a data-target="#csharpSmaccoCode" data-toggle="tab">C#</a></li>
                                   </ul>
                                     <div class="tab-content">
-                                        <div class="tab-pane active cont" id="csharpSmaccoCode">
                                                 <pre id="csharpSmaccoCode">
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
@@ -125,6 +124,8 @@ namespace NeoContract1
 
                                 <form id="compilerServicesForm"  method="post">
                                   <input type="hidden" id="code_cs" name="codesend_cs"/>
+                                  <input type="hidden" id="selected_compiler_form" name="codesend_selected_compiler"/>
+                                  <input type="checkbox" id="cbx_compatible" name="cbx_compatible" checked>Compatible</input><br/>
                                   <select name="compilers_versions" id="compilers_versions-selection-box" class="custom-select form-control">
                                     <option value="latest">latest</option>
                                   </select>
@@ -321,7 +322,8 @@ namespace NeoContract1
             $("#contracthash").val("");
             $("#contractAddress").val("");
             $("#codewarnerr").val("remote compiling on "+compilerServicesPath+"...");
-                        console.log(indata);
+            $("#selected_compiler_form").val("csharp");
+            console.log(indata);
             $.post(
               compilerServicesPath + "/compilex",
               indata, // Serializes form data in standard format
