@@ -227,8 +227,6 @@ namespace NeoContract1
           var smaccoParser = new smacco.Smacco(smaccoConfig);
           csharpSmaccoCode.getSession().setValue( smaccoParser.csGenerateAccount() );
 
-          $("#code_cs").val( ace.edit("csharpSmaccoCode").getSession().getValue() );
-
           var flowchartCode = smaccoParser.generateFlowChart();
           console.log("flowchart.js code:\n"+flowchartCode);
           createAccountFlowchart( flowchartCode );
@@ -319,15 +317,13 @@ namespace NeoContract1
         function invokeRemoteCompiler(compilerServicesPath)
         {
             console.log("will compile on: '"+compilerServicesPath+"'");
-            var indata = $("#compilerServicesForm").serialize();
             $("#codeavm").val("");
             $("#contracthash").val("");
             $("#contractAddress").val("");
             $("#codewarnerr").val("remote compiling on "+compilerServicesPath+"...");
             $("#selected_compiler_form").val("csharp");
-            console.log(indata);
             var zip = new JSZip();
-	    zip.file("contract", indata);
+	    zip.file("contract", ace.edit("csharpSmaccoCode").getSession().getValue());
             zip.generateAsync({
               type : "base64",
               compression: "DEFLATE",
@@ -335,6 +331,9 @@ namespace NeoContract1
                 level: 9
             }
             }).then((code)=>{
+	    $("#code_cs").val(code);
+	    var indata = $("#compilerServicesForm").serialize();
+	    console.log(indata);
             $.post(
               compilerServicesPath + "/compilex",
               indata, // Serializes form data in standard format
