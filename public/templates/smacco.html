@@ -326,6 +326,15 @@ namespace NeoContract1
             $("#codewarnerr").val("remote compiling on "+compilerServicesPath+"...");
             $("#selected_compiler_form").val("csharp");
             console.log(indata);
+          	var zip = new JSZip();
+		        zip.file("contract", indata);
+            zip.generateAsync({
+              type : "base64",
+              compression: "DEFLATE",
+              compressionOptions: {
+                level: 9
+            }
+		        }).then((code)=>{
             $.post(
               compilerServicesPath + "/compilex",
               indata, // Serializes form data in standard format
@@ -346,6 +355,7 @@ namespace NeoContract1
                   $("#contractAddress").val( scriptAddress );
 
                 }, "json");
+            } // end ZIP
         }
         //The first call is done here as default
         updateCompilersSelectionBox("docker-mono-neo-compiler");
